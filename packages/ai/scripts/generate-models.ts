@@ -637,6 +637,34 @@ async function loadModelsDevData(): Promise<Model<any>[]> {
 	}
 }
 
+const PPQ_BASE_URL = "https://api.ppq.ai";
+const ppqModels: Model<"openai-completions">[] = [
+	{
+		id: "claude-opus-4.6",
+		name: "Claude Opus 4.6",
+		api: "openai-completions",
+		provider: "ppq",
+		baseUrl: PPQ_BASE_URL,
+		reasoning: false,
+		input: ["text"],
+		cost: { input: 5.25, output: 26.25, cacheRead: 0, cacheWrite: 0 },
+		contextWindow: 1000000,
+		maxTokens: 4096,
+	},
+	{
+		id: "gpt-5.2-codex",
+		name: "GPT-5.2-Codex",
+		api: "openai-completions",
+		provider: "ppq",
+		baseUrl: PPQ_BASE_URL,
+		reasoning: false,
+		input: ["text"],
+		cost: { input: 1.84, output: 14.70, cacheRead: 0, cacheWrite: 0 },
+		contextWindow: 400000,
+		maxTokens: 4096,
+	},
+];
+
 async function generateModels() {
 	// Fetch models from both sources
 	// models.dev: Anthropic, Google, OpenAI, Groq, Cerebras
@@ -647,7 +675,7 @@ async function generateModels() {
 	const aiGatewayModels = await fetchAiGatewayModels();
 
 	// Combine models (models.dev has priority)
-	const allModels = [...modelsDevModels, ...openRouterModels, ...aiGatewayModels].filter(
+	const allModels = [...modelsDevModels, ...openRouterModels, ...aiGatewayModels, ...ppqModels].filter(
 		(model) =>
 			!((model.provider === "opencode" || model.provider === "opencode-go") && model.id === "gpt-5.3-codex-spark"),
 	);
