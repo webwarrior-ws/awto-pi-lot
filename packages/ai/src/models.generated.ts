@@ -10479,6 +10479,42 @@ export const MODELS = {
 			maxTokens: 4096,
 		} satisfies Model<"openai-completions">,
 	},
+	"ppq": {
+		"claude-opus-4.6": {
+			id: "claude-opus-4.6",
+			name: "Claude Opus 4.6",
+			api: "openai-completions",
+			provider: "ppq",
+			baseUrl: "https://api.ppq.ai",
+			reasoning: false,
+			input: ["text"],
+			cost: {
+				input: 5.25,
+				output: 26.25,
+				cacheRead: 0,
+				cacheWrite: 0,
+			},
+			contextWindow: 1000000,
+			maxTokens: 4096,
+		} satisfies Model<"openai-completions">,
+		"gpt-5.2-codex": {
+			id: "gpt-5.2-codex",
+			name: "GPT-5.2-Codex",
+			api: "openai-completions",
+			provider: "ppq",
+			baseUrl: "https://api.ppq.ai",
+			reasoning: false,
+			input: ["text"],
+			cost: {
+				input: 1.84,
+				output: 14.7,
+				cacheRead: 0,
+				cacheWrite: 0,
+			},
+			contextWindow: 400000,
+			maxTokens: 4096,
+		} satisfies Model<"openai-completions">,
+	},
 	"vercel-ai-gateway": {
 		"alibaba/qwen-3-14b": {
 			id: "alibaba/qwen-3-14b",
