@@ -2,13 +2,42 @@
 
 awto-pi-lot is an extension for [pi-coding-agent](https://www.npmjs.com/package/@mariozechner/pi-coding-agent) that adds support for [PPQ.ai](https://ppq.ai/) & its [AutoClaw](https://ppq.ai/blog/using-autoclaw-with-payperq) model.
 
+
+## Info
+
+To see the potential benefits of using PPQ/AutoClaw, see https://github.com/badlogic/pi-mono/discussions/2483
+
+
+## Install/use
+
 Install it with:
 
 ```
 ./pi/pi install npm:awto-pi-lot
 ```
 
-And authenticate with an [auth.json](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/providers.md#auth-file) file to hook your key, e.g.:
+Or from git directly:
+
+```
+./pi/pi install git:github.com/nblockchain/awto-pi-lot
+```
+
+Or if you want to use it without installing, use the `-e` flag (alias for `--extension`):
+
+```
+./pi/pi -e npm:awto-pi-lot
+```
+
+Or from git directly:
+
+```
+./pi/pi --extension git:github.com/nblockchain/awto-pi-lot
+```
+
+
+## Setup/auth
+
+You can authenticate with an [auth.json](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/providers.md#auth-file) file to hook your key, e.g.:
 
 ```
 { "ppq": { "type": "api_key", "key": "sk-..." } }
