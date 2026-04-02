@@ -1,11 +1,16 @@
-import { createRequire } from "node:module";
-const require = createRequire(import.meta.url);
-const packageJson = require("../package.json");
+// imports for pi
 import type {
     ExtensionAPI,
     ProviderModelConfig,
 } from "@mariozechner/pi-coding-agent";
-import { OptionHelpers, Some } from "fp-sdk";
+// imports for opencode
+import type { Plugin } from "@opencode-ai/plugin";
+import type { ProviderConfig } from "@opencode-ai/sdk";
+// common imports
+import { None, Nothing, type Option, OptionHelpers, Some } from "fp-sdk";
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+const packageJson = require("../package.json");
 
 interface PPQPricing {
     input_per_1M_tokens: number;
@@ -63,7 +68,7 @@ async function fetchPpqModels(): Promise<PPQModel[]> {
     }
 }
 
-async function filterPpqModels(
+async function filterPpqModelsForPi(
     apiModels: PPQModel[]
 ): Promise<ProviderModelConfig[]> {
     try {
@@ -133,10 +138,124 @@ async function filterPpqModels(
     }
 }
 
+async function filterPpqModelsForOpenCode(
+    apiModels: PPQModel[]
+): Promise<ProviderConfig["models"]> {
+    // PPQ API doesn't provide output limit, so use on from https://opencode.ai/docs/providers#example
+    const defaultOutputLimit = 65536;
+
+    function restrictToSupportedModalities(
+        modalities: Option<string[]>
+    ): ("text" | "image" | "audio" | "video" | "pdf")[] {
+        if (modalities instanceof None) {
+            return ["text"];
+        }
+        return modalities.value.filter((modality) => {
+            return (
+                modality === "text" ||
+                modality === "audio" ||
+                modality === "image" ||
+                modality === "video" ||
+                modality === "pdf"
+            );
+        });
+    }
+
+    const opencodeModels: ProviderConfig["models"] = {};
+    for (const model of apiModels) {
+        const maybeSupportedParameters = OptionHelpers.ofObj(
+            model.supported_parameters
+        );
+        const supportedParameters =
+            maybeSupportedParameters instanceof Some
+                ? maybeSupportedParameters.value
+                : [];
+        const maybeArchitecture = OptionHelpers.ofObj(model.architecture);
+        const inputModalities =
+            maybeArchitecture instanceof None
+                ? Nothing
+                : new Some(maybeArchitecture.value.input_modalities);
+        const outputModalities =
+            maybeArchitecture instanceof None
+                ? Nothing
+                : new Some(maybeArchitecture.value.output_modalities);
+
+        opencodeModels[model.id] = {
+            id: model.id,
+            name: model.name,
+            cost: {
+                input: model.pricing.input_per_1M_tokens,
+                output: model.pricing.output_per_1M_tokens,
+            },
+            limit: {
+                context: model.context_length,
+                output: defaultOutputLimit,
+            },
+            tool_call: supportedParameters.includes("tools"),
+            reasoning: supportedParameters.includes("reasoning"),
+            modalities: {
+                input: restrictToSupportedModalities(inputModalities),
+                output: restrictToSupportedModalities(outputModalities),
+            },
+        };
+    }
+
+    return opencodeModels;
+}
+
+// opencode plugin
+export const PpqPlugin: Plugin = async ({ client }) => {
+    await client.app.log({
+        body: {
+            service: "ppq-plugin",
+            level: "info",
+            message: "PPQ.ai plugin loaded",
+        },
+    });
+
+    return {
+        async config(config) {
+            const maybeProvider = OptionHelpers.ofObj(config.provider);
+            let provider: Record<string, ProviderConfig>;
+            // Initialize the providers dictionary if it doesn't exist
+            if (maybeProvider instanceof None) {
+                config.provider = {};
+                provider = config.provider;
+            } else {
+                provider = maybeProvider.value;
+            }
+
+            const models = await fetchPpqModels();
+
+            await client.app.log({
+                body: {
+                    service: "ppq-plugin",
+                    level: "info",
+                    message: `${models.length} PPQ.ai models fetched`,
+                },
+            });
+
+            const opencodeModels = await filterPpqModelsForOpenCode(models);
+
+            const apiKey = process.env.PPQ_API_KEY;
+            provider.ppq = {
+                npm: "@ai-sdk/openai-compatible",
+                name: "PPQ.ai",
+                options: {
+                    baseURL: ppqApiBaseUrl,
+                    apiKey: apiKey,
+                },
+                models: opencodeModels,
+            };
+        },
+    };
+};
+
+// pi plugin
 export default async function (pi: ExtensionAPI) {
     console.log(`${packageJson.name} v${packageJson.version} initializing...`);
     const apiModels = await fetchPpqModels();
-    const models = await filterPpqModels(apiModels);
+    const models = await filterPpqModelsForPi(apiModels);
     if (models.length > 0) {
         pi.registerProvider("ppq", {
             baseUrl: ppqApiBaseUrl,
