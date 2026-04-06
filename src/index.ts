@@ -86,7 +86,7 @@ async function filterPpqModels(apiModels: PPQModel[]): Promise<ProviderModelConf
 			} as ProviderModelConfig);
 		}
 
-		const defaultModelId = "autoclaw";
+		const defaultModelId = "auto";
 		models.sort((a, b) => (a.id === defaultModelId ? -1 : b.id === defaultModelId ? 1 : 0));
 
 		console.log(`Found ${models.length} compatible models from PPQ.ai`);
