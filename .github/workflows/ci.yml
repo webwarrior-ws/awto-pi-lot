@@ -78,6 +78,7 @@ jobs:
           URL="https://github.com/badlogic/pi-mono/releases/download/v${PI_VERSION}/pi-linux-x64.tar.gz"
           wget "$URL"
           tar -xzf "pi-linux-x64.tar.gz"
-          ./pi/pi install git:github.com/${GITHUB_REPOSITORY}@${{ (github.event_name == 'pull_request' && github.event.pull_request.base.sha) || github.sha }}
+          COMMIT_SHA=${git log --format=%H -1}
+          ./pi/pi install git:github.com/${GITHUB_REPOSITORY}@$COMMIT_SHA
           ./pi/pi --version
 
