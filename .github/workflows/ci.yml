@@ -59,6 +59,8 @@ jobs:
           # would make this CI job entirely pointless
           apt install --yes npm git wget
 
+          apt install --yes curl jq
+
       - name: Print versions
         run: node --version && npm --version
 
