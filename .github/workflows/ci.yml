@@ -76,17 +76,12 @@ jobs:
             echo "ERROR: @mariozechner/pi-coding-agent version ($PI_CODING_AGENT_VERSION) does not match PI version ($PI_VERSION)"
             exit 1
           fi
-
-      - name: Set IS_SCHEDULED env var
-        run: echo "IS_SCHEDULED=${{ github.event_name == 'schedule' }}" >> $GITHUB_ENV
-
       - name: Test Pi from git main branch with NodeJS version from latest Ubuntu LTS
         run: |
           git clone https://github.com/badlogic/pi-mono.git
           cd pi-mono
-          if [ "$IS_SCHEDULED" != "true" ]; then
-            git switch --detach v${PI_VERSION}
-          fi
+          LATEST_TAG=$(curl -s https://api.github.com/repos/badlogic/pi-mono/releases/latest | jq -r '.tag_name')
+          git switch --detach ${LATEST_TAG}
           npm install
           npm run build
           npm run check
