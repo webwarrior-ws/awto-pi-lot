@@ -44,7 +44,9 @@ async function fetchPPQModels(): Promise<Model<any>[]> {
 			const architecture = OptionHelpers.OfObj(model.architecture);
 
 			// pi requires models to have tool support (but include "autoclaw" model in any case)
-			if (model.id !== defaultModelId && supportedParameters.includes("tools")) continue;
+			if (model.id !== defaultModelId && !supportedParameters.includes("tools")) {
+				continue;
+			}
 
 			let inputModalities: ("text" | "image")[] = ["text"];
 			if (architecture instanceof Some) {
