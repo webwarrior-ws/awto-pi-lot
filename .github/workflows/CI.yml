@@ -96,12 +96,15 @@ jobs:
           cd ..
           rm -rf pi-mono
 
-      - name: Download and Install latest Pi release
+      - name: Download and Install Pi release
         run: |
           VERSION=$(cat last_version.txt)
           URL="https://github.com/badlogic/pi-mono/releases/download/v${VERSION}/pi-linux-x64.tar.gz"
           wget "$URL"
           tar -xzf "pi-linux-x64.tar.gz"
-          ./pi/pi install git:github.com/${GITHUB_REPOSITORY}@${{ (github.event_name == 'pull_request' && github.event.pull_request.base.sha) || github.sha }}
+          ./pi/pi install git:github.com/${GITHUB_REPOSITORY}@${{ (github.event_name == 'pull_request' && github.event.pull_request.head.sha) || github.sha }}
           ./pi/pi --version
 
+      - name: Test extension loading
+        run: |
+          (./pi/pi --print "dummy prompt" 2>&1 | tee output.txt) && grep -q awto-pi-lot output.txt
