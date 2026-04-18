@@ -12,7 +12,7 @@
 		"clean": "shx rm -rf dist",
 		"build": "esbuild src/index.ts --bundle=false --format=esm --platform=node --outdir=dist && shx cp README.md dist/",
 		"check": "npm install && npm run build && biome check --write --error-on-warnings .",
-		"prepare": "husky"
+		"prepare": "# can leave empty because Pi loads extensions with jiti"
 	},
 	"keywords": [
 		"pi",
