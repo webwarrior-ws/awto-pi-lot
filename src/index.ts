@@ -91,4 +91,7 @@ export default async function (pi: ExtensionAPI) {
 		apiKey: "PPQ_API_KEY",
 		models: models,
 	});
+
+	console.log(`awto-pi-lot ready: Successfully loaded ${models.length} models from PPQ.ai`);
+	return;
 }

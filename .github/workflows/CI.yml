@@ -107,4 +107,4 @@ jobs:
 
       - name: Test extension loading
         run: |
-          (./pi/pi --print "dummy prompt" 2>&1 | tee output.txt) && grep -q Fetched output.txt
+          (./pi/pi --print "dummy prompt" 2>&1 | tee output.txt) && grep -q awto-pi-lot output.txt
