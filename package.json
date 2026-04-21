@@ -10,9 +10,8 @@
 	},
 	"scripts": {
 		"clean": "shx rm -rf dist",
-		"build": "npx tsc && cp README.md dist/",
-		"check": "npm install && npm run build && biome check --write --error-on-warnings .",
-		"prepare": "# can leave empty because Pi loads extensions with jiti"
+		"build": "npx tsc && shx cp README.md dist/",
+		"check": "npm install && npm run build && biome check --write --error-on-warnings ."
 	},
 	"keywords": [
 		"pi",
