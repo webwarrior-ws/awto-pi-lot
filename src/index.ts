@@ -1,5 +1,4 @@
-import type { Model } from "@mariozechner/pi-ai";
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI, ProviderModelConfig } from "@mariozechner/pi-coding-agent";
 import { OptionHelpers, Some } from "fp-sdk";
 
 interface PPQPricing {
@@ -38,7 +37,7 @@ function isMetaModel(modelId: string): boolean {
 		lowered.startsWith("free");
 }
 
-async function fetchPPQModels(): Promise<Model<"openai-completions">[]> {
+async function fetchPPQModels(): Promise<ProviderModelConfig[]> {
 	try {
 		console.log("Fetching models from PPQ.ai...");
 		const response = await fetch(`${ppqApiBaseUrl}/v1/models`);
@@ -47,7 +46,7 @@ async function fetchPPQModels(): Promise<Model<"openai-completions">[]> {
 
 		const defaultModelId = "autoclaw";
 
-		const models: Model<"openai-completions">[] = [];
+		const models: ProviderModelConfig[] = [];
 
 		for (const model of data.data) {
 			const maybeSupportedParameters = OptionHelpers.OfObj(model.supported_parameters);
@@ -69,8 +68,6 @@ async function fetchPPQModels(): Promise<Model<"openai-completions">[]> {
 				id: model.id,
 				name: model.name,
 				api: "openai-completions",
-				baseUrl: ppqApiBaseUrl,
-				provider: "ppq",
 				reasoning: supportedParameters.includes("reasoning"),
 				input: inputModalities,
 				cost: {
@@ -80,7 +77,7 @@ async function fetchPPQModels(): Promise<Model<"openai-completions">[]> {
 					cacheWrite: 0,
 				},
 				contextWindow: model.context_length,
-			} as Model<"openai-completions">);
+			} as ProviderModelConfig);
 		}
 
 		models.sort((a, b) => (a.id === defaultModelId ? -1 : b.id === defaultModelId ? 1 : 0));
