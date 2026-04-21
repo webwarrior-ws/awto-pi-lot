@@ -38,7 +38,7 @@ function isMetaModel(modelId: string): boolean {
 		lowered.startsWith("free");
 }
 
-async function fetchPPQModels(): Promise<Model<any>[]> {
+async function fetchPPQModels(): Promise<Model<"openai-completions">[]> {
 	try {
 		console.log("Fetching models from PPQ.ai...");
 		const response = await fetch(`${ppqApiBaseUrl}/v1/models`);
@@ -47,7 +47,7 @@ async function fetchPPQModels(): Promise<Model<any>[]> {
 
 		const defaultModelId = "autoclaw";
 
-		const models: Model<any>[] = [];
+		const models: Model<"openai-completions">[] = [];
 
 		for (const model of data.data) {
 			const maybeSupportedParameters = OptionHelpers.OfObj(model.supported_parameters);
@@ -80,7 +80,7 @@ async function fetchPPQModels(): Promise<Model<any>[]> {
 					cacheWrite: 0,
 				},
 				contextWindow: model.context_length,
-			} as Model<any>);
+			} as Model<"openai-completions">);
 		}
 
 		models.sort((a, b) => (a.id === defaultModelId ? -1 : b.id === defaultModelId ? 1 : 0));
