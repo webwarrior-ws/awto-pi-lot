@@ -31,10 +31,11 @@ function isMetaModel(modelId: string): boolean {
 	const lowered = modelId.toLowerCase();
 
 	// e.g. AutoClaw and Auto
-	return lowered.startsWith("auto") ||
-
+	return (
+		lowered.startsWith("auto") ||
 		// there's a bunch of free models in PPQ.ai website, maybe they'll get exposed by the API at some point?
-		lowered.startsWith("free");
+		lowered.startsWith("free")
+	);
 }
 
 async function fetchPpqModels(): Promise<PPQModel[]> {
@@ -60,7 +61,7 @@ async function filterPpqModels(ppqModels: PPQModel[]): Promise<ProviderModelConf
 			const architecture = OptionHelpers.OfObj(model.architecture);
 
 			// pi requires models to have tool support
-			if ((!isMetaModel(model.id)) && !supportedParameters.includes("tools")) {
+			if (!isMetaModel(model.id) && !supportedParameters.includes("tools")) {
 				continue;
 			}
 
@@ -108,9 +109,7 @@ export default async function (pi: ExtensionAPI) {
 			models: models,
 		});
 		console.log(`awto-pi-lot ready: Successfully loaded ${models.length} models from PPQ.ai`);
-	}
-	else
-	{
+	} else {
 		console.error(`ERROR: no models from PPQ.ai could be fetched/configured`);
 	}
 
