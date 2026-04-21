@@ -50,11 +50,11 @@ async function fetchPpqModels(): Promise<PPQModel[]> {
 	}
 }
 
-async function filterPpqModels(models: PPQModel[]): Promise<ProviderModelConfig[]> {
+async function filterPpqModels(ppqModels: PPQModel[]): Promise<ProviderModelConfig[]> {
 	try {
 		const models: ProviderModelConfig[] = [];
 
-		for (const model of models) {
+		for (const model of ppqModels) {
 			const maybeSupportedParameters = OptionHelpers.OfObj(model.supported_parameters);
 			const supportedParameters = maybeSupportedParameters instanceof Some ? maybeSupportedParameters.value : [];
 			const architecture = OptionHelpers.OfObj(model.architecture);
