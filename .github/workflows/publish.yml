@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: $HEAD_TAG
 
       - name: Load variables from .env file
         run: cat .env >> $GITHUB_ENV
