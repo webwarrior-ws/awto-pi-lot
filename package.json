@@ -40,8 +40,10 @@
 		"url": "git+https://github.com/tarsgate/awto-pi-lot.git"
 	},
 	"dependencies": {
-		"@mariozechner/pi-coding-agent": "0.67.68",
 		"fp-sdk": "^0.1.1"
+	},
+	"peerDependencies": {
+		"@mariozechner/pi-coding-agent": "0.67.68"
 	},
 	"devDependencies": {
 		"prettier": "2.8.3",
