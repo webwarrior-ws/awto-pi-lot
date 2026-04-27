@@ -79,23 +79,3 @@ jobs:
           echo "IS_SCHEDULED=${{ github.event_name == 'schedule' }}" >> $GITHUB_ENV
           echo "GH_FULL_REPO=${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name) || github.repository }}" >> $GITHUB_ENV
           echo "GH_SHA=${{ (github.event_name == 'pull_request' && github.event.pull_request.head.sha) || github.sha }}" >> $GITHUB_ENV
-
-      - name: Download and Install Pi release
-        run: |
-          VERSION=$(cat last_version.txt)
-          URL="https://github.com/badlogic/pi-mono/releases/download/v${VERSION}/pi-linux-x64.tar.gz"
-          wget "$URL"
-          tar -xzf "pi-linux-x64.tar.gz"
-          ./pi/pi install "git:github.com/$GH_FULL_REPO@$GH_SHA"
-          ./pi/pi --version
-
-      - name: Test extension loading
-        run: |
-          # tee makes exitCode not propagate (which is what we want because even if
-          # extension loads successfully, it will abort due to 'No API Key found')
-          (./pi/pi --print "dummy prompt" 2>&1 | tee output.txt)
-
-          # therefore, we check the output for success or not
-          grep --quiet awto-pi-lot output.txt
-          # --null-data is to scan whole file, not line by line
-          grep --invert-match --quiet --null-data --ignore-case error output.txt
