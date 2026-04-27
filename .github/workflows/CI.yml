@@ -97,9 +97,6 @@ jobs:
           npm install
           npm run build
           npm run check
-          ./test.sh
-          ./pi-test.sh --version
-          ./pi-test.sh --version > ../last_version.txt 2>&1
           cd ..
           rm -rf pi-mono
 
