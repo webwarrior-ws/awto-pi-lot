@@ -1,9 +1,9 @@
 name: Publish Binaries
 
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
+  push:
+    tags:        
+      - '*'
 
 jobs:
   bin-publish:
