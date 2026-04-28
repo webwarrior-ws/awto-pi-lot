@@ -19,7 +19,7 @@ pi install npm:awto-pi-lot
 Or from git directly:
 
 ```
-pi install git:github.com/nblockchain/awto-pi-lot
+pi install git:github.com/tarsgate/awto-pi-lot
 ```
 
 Or if you want to use it without installing, use the `-e` flag (alias for `--extension`):
@@ -31,7 +31,7 @@ pi -e npm:awto-pi-lot
 Or from git directly:
 
 ```
-pi --extension git:github.com/nblockchain/awto-pi-lot
+pi --extension git:github.com/tarsgate/awto-pi-lot
 ```
 
 
@@ -45,7 +45,7 @@ You can authenticate with an [auth.json](https://github.com/badlogic/pi-mono/blo
 
 Which you can extract from your [PPQ.ai account page](https://ppq.ai/account-activity), and place in `~/.pi/agent/auth.json`.
 
-Using env var PPQ_API_KEY is also supported but not recommended, because sandboxing tools like [pi-less-yolo](https://github.com/cjermain/pi-less-yolo) would not work OOTB.
+Using env var PPQ_API_KEY is also supported but not recommended, because security tools like [skynot](https://github.com/tarsgate/skynot) or [pi-less-yolo](https://github.com/cjermain/pi-less-yolo) don't work with env vars OOTB.
 
 ---
 
