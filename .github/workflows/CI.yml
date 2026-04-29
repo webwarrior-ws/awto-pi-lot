@@ -26,6 +26,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Check NPM version
+        run: npm --version
+
       - name: Update system dependencies
         run: |
           sudo apt-get update
