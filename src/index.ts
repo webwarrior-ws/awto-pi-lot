@@ -1,3 +1,6 @@
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+const packageJson = require("../package.json");
 import type {
     ExtensionAPI,
     ProviderModelConfig,
@@ -131,6 +134,7 @@ async function filterPpqModels(
 }
 
 export default async function (pi: ExtensionAPI) {
+    console.log(`${packageJson.name} v${packageJson.version} initializing...`);
     const apiModels = await fetchPpqModels();
     const models = await filterPpqModels(apiModels);
     if (models.length > 0) {
@@ -141,7 +145,7 @@ export default async function (pi: ExtensionAPI) {
             models: models,
         });
         console.log(
-            `awto-pi-lot ready: Successfully loaded ${models.length} models from PPQ.ai`
+            `${packageJson.name} ready: Successfully loaded ${models.length} models from PPQ.ai`
         );
     } else {
         console.error(
