@@ -67,14 +67,14 @@ async function filterPpqModels(
         const models: ProviderModelConfig[] = [];
 
         for (const model of apiModels) {
-            const maybeSupportedParameters = OptionHelpers.OfObj(
+            const maybeSupportedParameters = OptionHelpers.ofObj(
                 model.supported_parameters
             );
             const supportedParameters =
                 maybeSupportedParameters instanceof Some
                     ? maybeSupportedParameters.value
                     : [];
-            const architecture = OptionHelpers.OfObj(model.architecture);
+            const architecture = OptionHelpers.ofObj(model.architecture);
 
             // pi requires models to have tool support
             if (
