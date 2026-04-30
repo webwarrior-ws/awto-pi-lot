@@ -134,7 +134,7 @@ async function filterPpqModels(
 }
 
 export default async function (pi: ExtensionAPI) {
-    console.log(`awto-pi-lot v${packageJson.version} initializing...`);
+    console.log(`${packageJson.name} v${packageJson.version} initializing...`);
     const apiModels = await fetchPpqModels();
     const models = await filterPpqModels(apiModels);
     if (models.length > 0) {
@@ -145,7 +145,7 @@ export default async function (pi: ExtensionAPI) {
             models: models,
         });
         console.log(
-            `awto-pi-lot ready: Successfully loaded ${models.length} models from PPQ.ai`
+            `${packageJson.name} ready: Successfully loaded ${models.length} models from PPQ.ai`
         );
     } else {
         console.error(
