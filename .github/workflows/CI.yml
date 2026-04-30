@@ -115,6 +115,6 @@ jobs:
           (./pi/pi --print "dummy prompt" 2>&1 | tee output.txt)
 
           # therefore, we check the output for success or not
-          grep --quiet awto-pi-lot output.txt
+          grep --quiet Success output.txt
           # --null-data is to scan whole file, not line by line
           grep --invert-match --quiet --null-data --ignore-case error output.txt

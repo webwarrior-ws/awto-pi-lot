@@ -1,3 +1,6 @@
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+const packageJson = require("../package.json");
 import type {
     ExtensionAPI,
     ProviderModelConfig,
@@ -131,6 +134,7 @@ async function filterPpqModels(
 }
 
 export default async function (pi: ExtensionAPI) {
+    console.log(`awto-pi-lot v${packageJson.version} initializing...`);
     const apiModels = await fetchPpqModels();
     const models = await filterPpqModels(apiModels);
     if (models.length > 0) {
