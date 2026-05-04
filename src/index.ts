@@ -7,7 +7,7 @@ import type {
 import type { Plugin } from "@opencode-ai/plugin";
 import type { ProviderConfig } from "@opencode-ai/sdk";
 // common imports
-import { None, Nothing, type Option, OptionHelpers, Some } from "fp-sdk";
+import { None, Nothing, type Option, OptionHelpers, Some, Empty } from "fp-sdk";
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const packageJson = require("../package.json");
@@ -161,7 +161,8 @@ async function filterPpqModelsForOpenCode(
         });
     }
 
-    const opencodeModels: ProviderConfig["models"] = {};
+    const opencodeModels: ProviderConfig["models"] =
+        (Empty.object() as ProviderConfig["models"])!;
     for (const model of apiModels) {
         const maybeSupportedParameters = OptionHelpers.ofObj(
             model.supported_parameters
@@ -219,7 +220,10 @@ export const PpqPlugin: Plugin = async ({ client }) => {
             let provider: Record<string, ProviderConfig>;
             // Initialize the providers dictionary if it doesn't exist
             if (maybeProvider instanceof None) {
-                config.provider = {};
+                config.provider = Empty.object() as Record<
+                    string,
+                    ProviderConfig
+                >;
                 provider = config.provider;
             } else {
                 provider = maybeProvider.value;
