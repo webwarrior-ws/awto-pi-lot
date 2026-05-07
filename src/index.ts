@@ -122,7 +122,12 @@ async function filterPpqModels(
                         return 2;
                 }
             };
-            return position(a.id) - position(b.id);
+            const diff = position(a.id) - position(b.id);
+            if (diff !== 0) {
+                return diff;
+            }
+            // alphabetically sort models that come after the defaults
+            return a.name.localeCompare(b.name);
         });
 
         console.log(`Found ${models.length} compatible models from PPQ.ai`);
