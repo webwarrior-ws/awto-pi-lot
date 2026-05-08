@@ -127,7 +127,7 @@ async function filterPpqModels(
                 return diff;
             }
             // alphabetically sort models that come after the defaults
-            return a.name.localeCompare(b.name);
+            return a.id.localeCompare(b.id);
         });
 
         console.log(`Found ${models.length} compatible models from PPQ.ai`);
