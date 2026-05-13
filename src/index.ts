@@ -3,9 +3,12 @@ const require = createRequire(import.meta.url);
 const packageJson = require("../package.json");
 import type {
     ExtensionAPI,
+    ExtensionContext,
     ProviderModelConfig,
 } from "@earendil-works/pi-coding-agent";
-import { OptionHelpers, Some } from "fp-sdk";
+import { OptionHelpers, Some, Empty } from "fp-sdk";
+import { FooterComponent, AgentSession } from "@earendil-works/pi-coding-agent";
+import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
 
 interface PPQPricing {
     input_per_1M_tokens: number;
@@ -157,6 +160,41 @@ export default async function (pi: ExtensionAPI) {
             `ERROR: no models from PPQ.ai could be fetched/configured`
         );
     }
+
+    // TODO: add the current ppq.ai balance to the footer exactly above the text where the model id is
+    function setFooter(ctx: ExtensionContext) {
+        ctx.ui.setFooter((tui, theme, footerData) => {
+            const unsub = footerData.onBranchChange(() => tui.requestRender());
+
+            return {
+                dispose: unsub,
+                invalidate() {},
+                render(width: number): string[] {
+                    const result: string[] = Empty.array();
+
+                    const branch = footerData.getGitBranch();
+                    const branchStr = branch ? ` (${branch})` : "";
+                    const left = theme.fg("dim", `${ctx.cwd} ${branchStr}`);
+                    const right = theme.fg("dim", `$0.5`);
+                    const pad = " ".repeat(
+                        Math.max(
+                            1,
+                            width - visibleWidth(left) - visibleWidth(right)
+                        )
+                    );
+                    result.push(truncateToWidth(left + pad + right, width));
+
+                    //const defaultFooter = new FooterComponent(, footerData);
+
+                    return result;
+                },
+            };
+        });
+    }
+
+    pi.on("model_select", async (event, ctx) => {
+        setFooter(ctx);
+    });
 
     return;
 }
